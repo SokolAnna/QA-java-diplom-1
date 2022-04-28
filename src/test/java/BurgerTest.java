@@ -1,10 +1,8 @@
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import praktikum.Bun;
 import praktikum.Burger;
 import praktikum.Ingredient;
@@ -13,14 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static praktikum.IngredientType.FILLING;
 import static praktikum.IngredientType.SAUCE;
 
-@RunWith(Parameterized.class)
+@RunWith(MockitoJUnitRunner.class)
 
 public class BurgerTest {
-
-    @Before
-    public void createMocks() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Mock
     Bun bun;
@@ -29,36 +22,12 @@ public class BurgerTest {
     @Mock
     Ingredient ingredient2;
 
-    private final float bunPrice;
-    private final float ingredient1Price;
-    private final float ingredient2Price;
-    private final float sum;
-
-    public BurgerTest(float bunPrice, float ingredient1Price, float ingredient2Price, float sum) {
-        this.bunPrice = bunPrice;
-        this.ingredient1Price = ingredient1Price;
-        this.ingredient2Price = ingredient2Price;
-        this.sum = sum;
-    }
-
-    @Parameterized.Parameters(name = "Test bun price: {0}, ingredient 1 price: {1}, ingredient 2 price: {2}")
-    public static Object[][] getIngredientType() {
-        return new Object[][]{
-                {100f, 200f, 100f, 500f},
-                {0f, 150f, 150f, 300f},
-                {200.0f, 0.0f, 0.0f, 400.0f},
-                {100.99f, 200.99f, 100.01f, 502.98f},
-                {-100f, 100f, 200, 100f},
-        };
-    }
-
     @Test
     public void burgerSetBunsPositiveResult() {
         Burger burger = new Burger();
         burger.setBuns(bun);
-        Mockito.when(burger.bun.getName()).thenReturn("тесто");
-        String actual = burger.bun.getName();
-        String expected = "тесто";
+        Bun actual = burger.bun;
+        Bun expected = bun;
         assertEquals("setBuns: bun not added", expected, actual);
     }
 
@@ -93,20 +62,6 @@ public class BurgerTest {
     }
 
     @Test
-    public void burgerGetPricePositiveResult() {
-        Burger burger = new Burger();
-        burger.setBuns(bun);
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
-        Mockito.when(bun.getPrice()).thenReturn(bunPrice);
-        Mockito.when(ingredient1.getPrice()).thenReturn(ingredient1Price);
-        Mockito.when(ingredient2.getPrice()).thenReturn(ingredient2Price);
-        float actual = burger.getPrice();
-        float expected = sum;
-        assertEquals("Price doesn't match", expected, actual, 0);
-    }
-
-    @Test
     public void burgerGetReceiptPositiveResult() {
         Burger burger = new Burger();
         burger.setBuns(bun);
@@ -122,10 +77,11 @@ public class BurgerTest {
 
         Mockito.when(ingredient2.getType()).thenReturn(FILLING);
         Mockito.when(ingredient2.getName()).thenReturn("cutlet");
-        Mockito.when(ingredient2.getPrice()).thenReturn(100f);
+        Mockito.when(ingredient2.getPrice()).thenReturn(300f);
 
+        float sum = (bun.getPrice() * 2) + ingredient1.getPrice() + ingredient2.getPrice();
         String actual = burger.getReceipt();
-        String expected = String.format("(==== black bun ====)%n" + "= sauce sour cream =%n" + "= filling cutlet =%n" + "(==== black bun ====)%n" + "%nPrice: 500,000000%n");
+        String expected = String.format("(==== black bun ====)%n" + "= sauce sour cream =%n" + "= filling cutlet =%n" + "(==== black bun ====)%n" + "%nPrice: %f%n", sum);
         assertEquals("Receipt doesn't match", expected, actual);
     }
 }

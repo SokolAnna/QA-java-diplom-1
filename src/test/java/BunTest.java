@@ -15,9 +15,9 @@ public class BunTest {
 
     @Test
     public void bunGetPricePositiveResult() {
-        Bun bun = new Bun("black bun", 100);
-        int actual = (int) bun.getPrice();
-        int expected = 100;
-        assertEquals("Price of buns does not match", expected, actual);
+        Bun bun = new Bun("black bun", 100.99f);
+        float actual = bun.getPrice();
+        float expected = 100.99f;
+        assertEquals("Price of buns does not match", expected, actual, 0);
     }
 }
