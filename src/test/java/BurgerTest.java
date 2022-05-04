@@ -8,6 +8,7 @@ import praktikum.Burger;
 import praktikum.Ingredient;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static praktikum.IngredientType.FILLING;
 import static praktikum.IngredientType.SAUCE;
 
@@ -46,8 +47,7 @@ public class BurgerTest {
         burger.addIngredient(ingredient1);
         burger.removeIngredient(0);
         boolean actual = burger.ingredients.isEmpty();
-        boolean expected = true;
-        assertEquals("The ingredient not removed", expected, actual);
+        assertTrue("The ingredient not removed", actual);
     }
 
     @Test
